@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#3367D6"/>
+  <link rel="apple-touch-icon" href="/icons-192.png">
+  <link rel="manifest" href="/manifest.json">
+  
+
+
+  <meta name="generator" content="Hexo 6.2.0">
+
+  
+
+  
+
+  
+    <meta name="author" content="W先生">
+  
+
+  
+
+  
+
+  <title>php-jwt | W先生的blog</title>
+
+  
+
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@1.1.3/index.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs@9.16.2/styles/monokai.css">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+  <div class="root-container">
+    
+<!-- header container -->
+<header class="header-container post">
+  
+    <div class="post-image" style="background-image: url(https://qiniu.sukoshi.xyz/src/images/68686407_p0.jpg)"></div>
+  
+
+  <!-- navbar -->
+<nav class="navbar">
+  <div class="navbar-content">
+    <!-- logo -->
+    <div class="navbar-logo">
+      <a href="/">
+        
+          W先生的blog
+        
+      </a>
+    </div>
+    <!-- link -->
+    <div class="navbar-link">
+      <div class="navbar-btn">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <ul class="navbar-list">
+        
+          <li class="navbar-list-item"><a href="/">首页</a></li>
+        
+          <li class="navbar-list-item"><a href="/links">友链</a></li>
+        
+          <li class="navbar-list-item"><a href="/about">关于</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+    <div class="header-content">
+      <div class="post-text layout-block">
+        <div class="layout-margin">
+          <h1 class="title-wrap">php-jwt</h1>
+          <h2 class="title-sub-wrap">
+            <strong>W先生</strong>
+            <span>发布于</span>
+            <time  class="article-date" datetime="2022-08-13T01:39:50.000Z" itemprop="datePublished">2022-08-13</time>
+          </h2>
+          <ul class="wrap-list dark">
+  
+</ul>
+          <ul class="wrap-list dark">
+  
+</ul>
+        </div>
+      </div>
+    </div>
+  
+
+  
+  
+  
+</header>
+
+    <!-- 文章 -->
+
+<!-- 文章内容 -->
+<div class="body-container">
+  <article class="content-container layout-block post-container">
+    <div class="article-info">
+      
+      
+      
+      
+      <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
+        <h1 id="php-jwt"><a href="#php-jwt" class="headerlink" title="php-jwt"></a>php-jwt</h1><div class="aplayer-box" data-url='https://qiniu.sukoshi.xyz/public/music/鹿乃 - アイロニ.mp3' data-name='アイロニ' data-artist='鹿乃' data-cover='https://qiniu.sukoshi.xyz/public/music/鹿乃 - アイロニ.jpg' data-lrc='https://qiniu.sukoshi.xyz/public/music/鹿乃 - アイロニ.lrc' data-lrcType='3' ></div>
+
+<h2 id="使用jwt登录"><a href="#使用jwt登录" class="headerlink" title="使用jwt登录"></a>使用jwt登录</h2><p>一、什么是jwt，怎么运行的<br>1、jwt &#x3D;&#x3D; Json Web Tokens<br>2、传统认证与jwt认证的区别与优势：<br>传统的方式：<br>主要是将认证后的用户信息储存在服务器上，比如Session。用户下次请求的时候带上Session Id，然后服务器以此查询用户是否认证过</p>
+<p>传统认证方式的问题：<br>（1）、每次用户认证通过后，服务器需要创建一天记录保存用户信息，通常是在内存中，随着认证通过的用户越来越多，服务器在这里的开销就越来越大<br>（2）、session是在内存中，容易带来一些扩展性的问题<br>（3）、当我们想要扩展应用，需要多个服务器提供服务时，需要考虑session共享问题，不然可能会导致用户多次登录<br>（4）、用户容易收到csrf攻击，且要考虑客户端禁用cookie的问题</p>
+<p>1.用户携带用户名和密码登入；<br>2.服务器校验用户信息<br>3.然后服务器提供一个token给客户端（jwt）<br>4.客户端会存储token，并且在随后的每一次请求中都带着它<br>5.服务器校验token，并获取信息。</p>
+<p>注意的点：<br>1.每一次请求都需要token<br>2.token应该放在请求header中<br>3.我们还需要将服务器设置为接受来自所有域的请求，用Access-Control-Allow-Origin:*</p>
+<p>JWT组成结构；头部、负载、签名<br>jwt &#x3D;》这是一个字符串在字符串中通过 . 进行分割； 分为了三个部分；<br>第一部分；header<br>第二部分：payload<br>第三部分：signature</p>
+<p>使用jwt的好处<br>1、无状态和可扩展性：token存储在客户端，完全无状态，可扩展。负载均衡器可以将用户传递到任意服务器，因为在任何地方都没有状态或回话信息<br>2、安全性：token不是cookie，每次请求token都会被发送，由于没有cookie，有助于防止csrf攻击<br>3、token在一段时间后会过期，这个时候需要重新登录，有助于保持安全，还有一个概念叫token撤销，它允许我们根据相同的授权许可使特定的token甚至一组token无效</p>
+<p>jwt的头部承载两部分信息：</p>
+<ul>
+<li>声明类型，这里是jwt</li>
+<li>声明加密的算法 通常直接使用 HMAC SHA256</li>
+</ul>
+<p>载荷就是存放有效信息的地方。这个名字像是特指飞机上承载的货品，这些有效信息包含三个部分</p>
+<ul>
+<li>标准中注册的声明</li>
+<li>公共的声明</li>
+<li>私有的声明</li>
+</ul>
+<p>jwt的第三部分是一个签证信息，这个签证信息由三部分组成：</p>
+<ul>
+<li><p>header (base64后的)</p>
+</li>
+<li><p>payload (base64后的)</p>
+</li>
+<li><p>secret</p>
+<p> 第一部分 header  ，声明，jwt声明以及加密方式     第二部分  playload 载荷  对header以及个人信息进行加密并且用    .     隔开。第三部分，对载荷进行加密并且在前面加上第二部分的加密后的字符串，进行连接形成  第三部分</p>
+</li>
+</ul>
+<p>开始</p>
+<h3 id="1、jwt的安装"><a href="#1、jwt的安装" class="headerlink" title="1、jwt的安装"></a>1、jwt的安装</h3><p>composer require tymon&#x2F;jwt-auth</p>
+<h3 id="2然后执行"><a href="#2然后执行" class="headerlink" title="2然后执行"></a>2然后执行</h3><p>php artisan vendor:publish –provider&#x3D;“Tymon\JWTAuth\Providers\LaravelServiceProvider”<br>这个指令就是把jwt的配置发布出，简单点就是在config目录下创建一个jwt的配置文件,同时也把jwt的组件服务加载到项目中，之后就可以通过在env的配置中修改   当时在执行这个的时候发现原来jwt.php文件原来早就存在</p>
+<h3 id="3、生成秘钥"><a href="#3、生成秘钥" class="headerlink" title="3、生成秘钥"></a>3、生成秘钥</h3><p>然后可以再运行<br>php artisan jwt:secret<br>这个命令会在env中增加一个JWT_SECRET，同我们的APP_KEY这个secret是十分重要的，用于给Token签名，更换这个secret会导致之前生成的所有token无效，所以不要随意的替换这个secret</p>
+<h3 id="4、手动添加服务提供者信息（Laravel5-4及以下版本需要，5-5及以上版本无需手动添加）"><a href="#4、手动添加服务提供者信息（Laravel5-4及以下版本需要，5-5及以上版本无需手动添加）" class="headerlink" title="4、手动添加服务提供者信息（Laravel5.4及以下版本需要，5.5及以上版本无需手动添加）"></a>4、手动添加服务提供者信息（Laravel5.4及以下版本需要，5.5及以上版本无需手动添加）</h3><p>将下面这行添加至 config&#x2F;app.php 文件 providers 数组中：</p>
+<p>#文件：config&#x2F;app.php<br>‘providers’ &#x3D;&gt; [<br>    &#x2F;&#x2F; other code<br>    Tymon\JWTAuth\Providers\LaravelServiceProvider::class,</p>
+<h3 id="5、配置Auth-guard，让api的driver使用jwt"><a href="#5、配置Auth-guard，让api的driver使用jwt" class="headerlink" title="5、配置Auth guard，让api的driver使用jwt"></a>5、配置Auth guard，让api的driver使用jwt</h3><p>#文件：config&#x2F;auth.php<br>‘guards’ &#x3D;&gt; [<br>    ‘api’ &#x3D;&gt; [<br>        ‘driver’ &#x3D;&gt; ‘jwt’,<br>        ‘provider’ &#x3D;&gt; ‘users’,<br>    ],<br>],</p>
+<h3 id="6、注册两个-Facade别名"><a href="#6、注册两个-Facade别名" class="headerlink" title="6、注册两个 Facade别名"></a>6、注册两个 Facade别名</h3><p>这两个 Facade 不是必须的，但是使用它们会给你的代码编写带来一点便利。<br>config&#x2F;app.php</p>
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>‘aliases’ &#x3D;&gt; [<br>        …<br>        &#x2F;&#x2F; 添加以下两行<br>       ‘JWTAuth’ &#x3D;&gt; Tymon\JWTAuth\Facades\JWTAuth::class,<br>       ‘JWTFactory’ &#x3D;&gt; Tymon\JWTAuth\Facades\JWTFactory::class,<br>],</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45310179/article/details/120989859">(33条消息) laravel jwt实现用户认证登录_懒猫一小只的博客-CSDN博客</a></p>
+<p>controller</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">namespace App\Http\Controllers;</span><br><span class="line"></span><br><span class="line">use App\Models\Users;</span><br><span class="line">use Illuminate\Http\Request;</span><br><span class="line">use Illuminate\Support\Facades\Auth;</span><br><span class="line">use Illuminate\Support\Facades\DB;</span><br><span class="line"></span><br><span class="line">class UsersController extends Controller</span><br><span class="line">&#123;</span><br><span class="line">    /**</span><br><span class="line">     * 注册</span><br><span class="line">     * @param Request $registeredRequest</span><br><span class="line">     * @return \Illuminate\Http\JsonResponse</span><br><span class="line">     * @throws \Exception</span><br><span class="line">     */</span><br><span class="line">    public function registered(Request $registeredRequest)</span><br><span class="line">    &#123;</span><br><span class="line">        $count = Users::checknumber($registeredRequest);   //检测账号密码是否存在</span><br><span class="line">        if($count == 0)</span><br><span class="line">        &#123;</span><br><span class="line">            $student_id = Users::createUser(self::userHandle($registeredRequest));</span><br><span class="line">            return  $student_id ?</span><br><span class="line">                json_success(&#x27;注册成功!&#x27;,$student_id,200  ) :</span><br><span class="line">                json_fail(&#x27;注册失败!&#x27;,null,100  ) ;</span><br><span class="line">        &#125;</span><br><span class="line">        else&#123;</span><br><span class="line">            return</span><br><span class="line">                json_success(&#x27;注册失败!该工号已经注册过了！&#x27;,null,100  ) ;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * @param Request $request</span><br><span class="line">     * @return \Illuminate\Http\JsonResponse</span><br><span class="line">     */</span><br><span class="line">    public function login(Request $request)</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        $credentials = self::credentials($request);   //从前端获取账号密码</span><br><span class="line">        //以手机号登录测试，具体根据自己的业务逻辑</span><br><span class="line">    //    $user = DB::table(&#x27;users&#x27;)-&gt;first();</span><br><span class="line">      /*   if(!$user)&#123;</span><br><span class="line">            $user = new UsersModel();</span><br><span class="line">            $user-&gt;phone = $phone;</span><br><span class="line">            $user-&gt;save();</span><br><span class="line">        &#125;*/</span><br><span class="line">        //方式一</span><br><span class="line">      // $token = JWTAuth::fromUser($user);</span><br><span class="line">        //方式二</span><br><span class="line">      $token = auth(&#x27;api&#x27;)-&gt;attempt($credentials);   //获取token</span><br><span class="line">//        if(!$token)&#123;</span><br><span class="line">//            return response()-&gt;json([&#x27;error&#x27; =&gt; &#x27;Unauthorized&#x27;],401);</span><br><span class="line">//        &#125;</span><br><span class="line">//        return self::respondWithToken($token, &#x27;登录成功!&#x27;);   //可选择返回方式</span><br><span class="line">        return $token?</span><br><span class="line">            json_success(&#x27;登录成功!&#x27;,$token,  200):</span><br><span class="line">            json_fail(&#x27;登录失败!账号或密码错误&#x27;,null, 100 ) ;</span><br><span class="line">     //       json_success(&#x27;登录成功!&#x27;,$this-&gt;respondWithToken($token,$user),  200);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //封装token的返回方式</span><br><span class="line">    protected function respondWithToken($token, $msg)</span><br><span class="line">    &#123;</span><br><span class="line">       // $data = Auth::user();</span><br><span class="line">        return json_success( $msg, array(</span><br><span class="line">            &#x27;token&#x27; =&gt; $token,</span><br><span class="line">            //设置权限  &#x27;token_type&#x27; =&gt; &#x27;bearer&#x27;,</span><br><span class="line">            &#x27;expires_in&#x27; =&gt; auth(&#x27;api&#x27;)-&gt;factory()-&gt;getTTL() * 60</span><br><span class="line">        ),200);</span><br><span class="line">    &#125;</span><br><span class="line">    protected function credentials($request)   //从前端获取账号密码</span><br><span class="line">    &#123;</span><br><span class="line">        return [&#x27;account&#x27; =&gt; $request[&#x27;account&#x27;], &#x27;password&#x27; =&gt; $request[&#x27;password&#x27;]];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    protected function userHandle($request)   //对密码进行哈希256加密</span><br><span class="line">    &#123;</span><br><span class="line">        $registeredInfo = $request-&gt;except(&#x27;password_confirmation&#x27;);</span><br><span class="line">        $registeredInfo[&#x27;password&#x27;] = bcrypt($registeredInfo[&#x27;password&#x27;]);</span><br><span class="line">       $registeredInfo[&#x27;account&#x27;] = $registeredInfo[&#x27;account&#x27;];</span><br><span class="line">        return $registeredInfo;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>model</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">namespace App\Models;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">use Illuminate\Database\Eloquent\SoftDeletes;</span><br><span class="line">use Illuminate\Foundation\Auth\User as Authenticatable;</span><br><span class="line">use Illuminate\Notifications\Notifiable;</span><br><span class="line">use Tymon\JWTAuth\Contracts\JWTSubject;</span><br><span class="line"></span><br><span class="line">class Users extends Authenticatable implements JWTSubject</span><br><span class="line">&#123;</span><br><span class="line">    use Notifiable ;</span><br><span class="line"></span><br><span class="line">    protected $table = &#x27;users&#x27;;</span><br><span class="line">    protected $remeberTokenName = NULL;</span><br><span class="line">    protected $guarded = [];</span><br><span class="line">    protected $fillable = [ &#x27;password&#x27;,&#x27;account&#x27;];</span><br><span class="line">    protected $hidden = [</span><br><span class="line">        &#x27;password&#x27;,</span><br><span class="line">    ];</span><br><span class="line">    public function getJWTCustomClaims()</span><br><span class="line">    &#123;</span><br><span class="line">        // TODO: Implement getJWTCustomClaims() method.</span><br><span class="line">        return [];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public function getJWTIdentifier()</span><br><span class="line">    &#123;</span><br><span class="line">        // TODO: Implement getJWTIdentifier() method.</span><br><span class="line">        return $this-&gt;getKey();</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 创建用户</span><br><span class="line">     *</span><br><span class="line">     * @param array $array</span><br><span class="line">     * @return |null</span><br><span class="line">     * @throws \Exception</span><br><span class="line">     */</span><br><span class="line">    public static function createUser($array = [])</span><br><span class="line">    &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            $student_id = self::create($array)-&gt;id;</span><br><span class="line">            //echo &quot;student_id:&quot; . $student_id;</span><br><span class="line">            return $student_id ?</span><br><span class="line">                $student_id :</span><br><span class="line">                false;</span><br><span class="line">        &#125; catch (\Exception $e) &#123;</span><br><span class="line">            logError(&#x27;添加用户失败!&#x27;, [$e-&gt;getMessage()]);</span><br><span class="line">            die($e-&gt;getMessage());</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 查询该工号是否已经注册</span><br><span class="line">     * 返回该工号注册过的个数</span><br><span class="line">     * @param $request</span><br><span class="line">     * @return false</span><br><span class="line">     */</span><br><span class="line">    public static function checknumber($request)</span><br><span class="line">    &#123;</span><br><span class="line">        $student_job_number = $request[&#x27;account&#x27;];</span><br><span class="line">        try&#123;</span><br><span class="line">            $count = Users::select(&#x27;account&#x27;)</span><br><span class="line">                -&gt;where(&#x27;account&#x27;,$student_job_number)</span><br><span class="line">                -&gt;count();</span><br><span class="line">            //echo &quot;该账号存在个数：&quot;.$count;</span><br><span class="line">            //echo &quot;\n&quot;;</span><br><span class="line">            return $count;</span><br><span class="line">        &#125;catch (\Exception $e) &#123;</span><br><span class="line">            logError(&quot;账号查询失败！&quot;, [$e-&gt;getMessage()]);</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上即可实现jwt登录  。。 。 。 </p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45310179/article/details/120989859">(33条消息) laravel jwt实现用户认证登录_懒猫一小只的博客-CSDN博客</a></p>
+<h3 id="jwt中间件-x1管理"><a href="#jwt中间件-x1管理" class="headerlink" title="jwt中间件   x1管理"></a>jwt中间件   x1管理</h3><p>在middware  中建立</p>
+<p>php artisan make:middleware RefreshToken</p>
+<p>中书写</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">namespace App\Http\Middleware;</span><br><span class="line"></span><br><span class="line">use Closure;</span><br><span class="line">use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;</span><br><span class="line">use Tymon\JWTAuth\Exceptions\JWTException;</span><br><span class="line">use Tymon\JWTAuth\Exceptions\TokenExpiredException;</span><br><span class="line">use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;</span><br><span class="line">use Illuminate\Support\Facades\Auth;</span><br><span class="line"></span><br><span class="line">class RefreshToken extends BaseMiddleware</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * @param $request</span><br><span class="line">     * @param Closure $next</span><br><span class="line">     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|mixed</span><br><span class="line">     * @throws JWTException</span><br><span class="line">     */</span><br><span class="line">    public function handle($request , Closure $next)</span><br><span class="line">    &#123;</span><br><span class="line">        //检查此次请求中，是否携带token，如果没有则抛出异常</span><br><span class="line">        $this-&gt;checkForToken($request);</span><br><span class="line"></span><br><span class="line">        try&#123;</span><br><span class="line">            //检测用户登录状态，如果正常，则通过</span><br><span class="line">            if($this-&gt;auth-&gt;parseToken()-&gt;authenticate())&#123;</span><br><span class="line">                return $next($request);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            throw new UnauthorizedHttpException(&#x27;jwt-auth&#x27;,json_encode([&#x27;status&#x27; =&gt; 401,&#x27;msg&#x27; =&gt; &#x27;未登录&#x27;]));</span><br><span class="line"></span><br><span class="line">        &#125;catch (TokenExpiredException $exception)&#123;</span><br><span class="line"></span><br><span class="line">            // 此处捕获到了 token 过期所抛出的 TokenExpiredException 异常，我们在这里需要做的是刷新该用户的 token 并将它添加到响应头中</span><br><span class="line">            try&#123;</span><br><span class="line">                //刷新用户token，并放到头部</span><br><span class="line">                $token = $this-&gt;auth-&gt;refresh();</span><br><span class="line"></span><br><span class="line">                //使用一次性登录，保证请求成功</span><br><span class="line">                Auth::guard(&#x27;api&#x27;)-&gt;onceUsingId($this-&gt;auth-&gt;manager()-&gt;getPayloadFactory()-&gt;buildClaimsCollection()-&gt;toPlainArray()[&#x27;sub&#x27;]);</span><br><span class="line"></span><br><span class="line">            &#125;catch (JWTException $exception)&#123;</span><br><span class="line">                //如果走到这里，说明refresh也过期了，需要重新登录</span><br><span class="line"></span><br><span class="line">                throw new UnauthorizedHttpException(&#x27;jwt-auth&#x27;,json_encode([&#x27;status&#x27; =&gt; 401 , &#x27;msg&#x27; =&gt; &#x27;未登录&#x27;]));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //在响应头中返回新的token</span><br><span class="line"></span><br><span class="line">        return $this-&gt;setAuthenticationHeader($next($request),$token);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后在</p>
+<p>Kenrnel.php文件中注册中间件为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$routeMiddleware=[</span><br><span class="line"> &#x27;refresh.token&#x27; =&gt; \App\Http\Middleware\RefreshToken::class,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>添加路由测试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Route::group([&#x27;middleware&#x27;=&gt;&#x27;refresh.token&#x27;],function()&#123;</span><br><span class="line">    //测试是否携带token</span><br><span class="line">    Route::any(&#x27;users/test&#x27;,&#x27;UsersController@test&#x27;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="关于jwt做多管理表"><a href="#关于jwt做多管理表" class="headerlink" title="关于jwt做多管理表"></a>关于jwt做多管理表</h2><p>model</p>
+<p>getJWTIdentifier 的：获取会储存到 jwt 声明中的标识，其实就是要我们返回标识用户表的主键字段名称，这里是返回的是主键 ‘id’,<br>getJWTCustomClaims：返回包含要添加到 jwt 声明中的自定义键值对数组，这里返回空数组，没有添加任何自定义信息。</p>
+<p>model1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public function getJWTCustomClaims()</span><br><span class="line">&#123;</span><br><span class="line">    // TODO: Implement getJWTCustomClaims() method.</span><br><span class="line">    return [&#x27;role&#x27; =&gt; &#x27;user&#x27;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>model2</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public function getJWTCustomClaims()</span><br><span class="line">&#123;</span><br><span class="line">    // TODO: Implement getJWTCustomClaims() method.</span><br><span class="line">    return [&#x27;role&#x27; =&gt; &#x27;admin&#x27;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>中间件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">/**</span><br><span class="line"> * Created by PhpStorm.</span><br><span class="line"> * User: wlalala</span><br><span class="line"> * Date: 2019-04-17</span><br><span class="line"> * Time: 13:55</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">namespace App\Http\Middleware;</span><br><span class="line"></span><br><span class="line">use Closure;</span><br><span class="line">use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;</span><br><span class="line">use Tymon\JWTAuth\Exceptions\JWTException;</span><br><span class="line">use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;</span><br><span class="line"></span><br><span class="line">class JWTRoleAuth extends BaseMiddleware</span><br><span class="line">&#123;</span><br><span class="line">    /**</span><br><span class="line">     * Handle an incoming request.</span><br><span class="line">     *</span><br><span class="line">     * @param $request</span><br><span class="line">     * @param Closure $next</span><br><span class="line">     * @param null $role</span><br><span class="line">     * @return mixed</span><br><span class="line">     */</span><br><span class="line">    public function handle($request, Closure $next, $role = null)</span><br><span class="line">    &#123;</span><br><span class="line">        //检查此次请求中，是否携带token，如果没有则抛出异常</span><br><span class="line">        $this-&gt;checkForToken($request);</span><br><span class="line">        try &#123;</span><br><span class="line">            // 解析token角色</span><br><span class="line">            $token_role = $this-&gt;auth-&gt;parseToken()-&gt;getClaim(&#x27;role&#x27;);</span><br><span class="line"></span><br><span class="line">        &#125; catch (JWTException $e) &#123;</span><br><span class="line">            /**</span><br><span class="line">             * token解析失败，说明请求中没有可用的token。</span><br><span class="line">             * 为了可以全局使用（不需要token的请求也可通过），这里让请求继续。</span><br><span class="line">             * 因为这个中间件的责职只是校验token里的角色。</span><br><span class="line">             */</span><br><span class="line">            return $next($request);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 判断token角色。</span><br><span class="line">        if ($token_role != $role) &#123;</span><br><span class="line">            throw new UnauthorizedHttpException(&#x27;jwt-auth&#x27;, &#x27;User role error&#x27;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return $next($request);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>修改   auth</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">return [</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">    |--------------------------------------------------------------------------</span><br><span class="line">    | Authentication Defaults</span><br><span class="line">    |--------------------------------------------------------------------------</span><br><span class="line">    |</span><br><span class="line">    | This option controls the default authentication &quot;guard&quot; and password</span><br><span class="line">    | reset options for your application. You may change these defaults</span><br><span class="line">    | as required, but they&#x27;re a perfect start for most applications.</span><br><span class="line">    |</span><br><span class="line">    */</span><br><span class="line"></span><br><span class="line">    &#x27;defaults&#x27; =&gt; [</span><br><span class="line">        &#x27;guard&#x27; =&gt; &#x27;api&#x27;,</span><br><span class="line">        &#x27;passwords&#x27; =&gt; &#x27;users&#x27;,</span><br><span class="line">    ],</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">    |--------------------------------------------------------------------------</span><br><span class="line">    | Authentication Guards</span><br><span class="line">    |--------------------------------------------------------------------------</span><br><span class="line">    |</span><br><span class="line">    | Next, you may define every authentication guard for your application.</span><br><span class="line">    | Of course, a great default configuration has been defined for you</span><br><span class="line">    | here which uses session storage and the Eloquent user provider.</span><br><span class="line">    |</span><br><span class="line">    | All authentication drivers have a user provider. This defines how the</span><br><span class="line">    | users are actually retrieved out of your database or other storage</span><br><span class="line">    | mechanisms used by this application to persist your user&#x27;s data.</span><br><span class="line">    |</span><br><span class="line">    | Supported: &quot;session&quot;, &quot;token&quot;</span><br><span class="line">    |</span><br><span class="line">    */</span><br><span class="line"></span><br><span class="line">    &#x27;guards&#x27; =&gt; [</span><br><span class="line">        &#x27;web&#x27; =&gt; [</span><br><span class="line">            &#x27;driver&#x27; =&gt; &#x27;session&#x27;,</span><br><span class="line">            &#x27;provider&#x27; =&gt; &#x27;users&#x27;,</span><br><span class="line">        ],</span><br><span class="line"></span><br><span class="line">        &#x27;api&#x27; =&gt; [</span><br><span class="line">            &#x27;driver&#x27; =&gt; &#x27;jwt&#x27;,</span><br><span class="line">            &#x27;provider&#x27; =&gt; &#x27;users&#x27;,</span><br><span class="line">        ],</span><br><span class="line">        &#x27;super&#x27; =&gt; [</span><br><span class="line">            &#x27;driver&#x27; =&gt; &#x27;jwt&#x27;,</span><br><span class="line">            &#x27;provider&#x27; =&gt; &#x27;user&#x27;,</span><br><span class="line">        ]</span><br><span class="line">    ],</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">    |--------------------------------------------------------------------------</span><br><span class="line">    | User Providers</span><br><span class="line">    |--------------------------------------------------------------------------</span><br><span class="line">    |</span><br><span class="line">    | All authentication drivers have a user provider. This defines how the</span><br><span class="line">    | users are actually retrieved out of your database or other storage</span><br><span class="line">    | mechanisms used by this application to persist your user&#x27;s data.</span><br><span class="line">    |</span><br><span class="line">    | If you have multiple user tables or models you may configure multiple</span><br><span class="line">    | sources which represent each model / table. These sources may then</span><br><span class="line">    | be assigned to any extra authentication guards you have defined.</span><br><span class="line">    |</span><br><span class="line">    | Supported: &quot;database&quot;, &quot;eloquent&quot;</span><br><span class="line">    |</span><br><span class="line">    */</span><br><span class="line"></span><br><span class="line">    &#x27;providers&#x27; =&gt; [</span><br><span class="line">        &#x27;users&#x27; =&gt; [</span><br><span class="line">            &#x27;driver&#x27; =&gt; &#x27;eloquent&#x27;,</span><br><span class="line">            &#x27;model&#x27; =&gt; App\Models\User::class,</span><br><span class="line">        ],</span><br><span class="line"></span><br><span class="line">        &#x27;user&#x27; =&gt; [</span><br><span class="line">            &#x27;driver&#x27; =&gt; &#x27;eloquent&#x27;,</span><br><span class="line">            &#x27;model&#x27; =&gt; App\Models\SupUser::class,</span><br><span class="line">        ],</span><br><span class="line">        // &#x27;users&#x27; =&gt; [</span><br><span class="line">        //     &#x27;driver&#x27; =&gt; &#x27;database&#x27;,</span><br><span class="line">        //     &#x27;table&#x27; =&gt; &#x27;users&#x27;,</span><br><span class="line">        // ],</span><br><span class="line">    ],</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">    |--------------------------------------------------------------------------</span><br><span class="line">    | Resetting Passwords</span><br><span class="line">    |--------------------------------------------------------------------------</span><br><span class="line">    |</span><br><span class="line">    | You may specify multiple password reset configurations if you have more</span><br><span class="line">    | than one user table or model in the application and you want to have</span><br><span class="line">    | separate password reset settings based on the specific user types.</span><br><span class="line">    |</span><br><span class="line">    | The expire time is the number of minutes that the reset token should be</span><br><span class="line">    | considered valid. This security feature keeps tokens short-lived so</span><br><span class="line">    | they have less time to be guessed. You may change this as needed.</span><br><span class="line">    |</span><br><span class="line">    */</span><br><span class="line"></span><br><span class="line">    &#x27;passwords&#x27; =&gt; [</span><br><span class="line">        &#x27;users&#x27; =&gt; [</span><br><span class="line">            &#x27;provider&#x27; =&gt; &#x27;users&#x27;,</span><br><span class="line">            &#x27;table&#x27; =&gt; &#x27;password_resets&#x27;,</span><br><span class="line">            &#x27;expire&#x27; =&gt; 60,</span><br><span class="line">            &#x27;throttle&#x27; =&gt; 60,</span><br><span class="line">        ],</span><br><span class="line">    ],</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">    |--------------------------------------------------------------------------</span><br><span class="line">    | Password Confirmation Timeout</span><br><span class="line">    |--------------------------------------------------------------------------</span><br><span class="line">    |</span><br><span class="line">    | Here you may define the amount of seconds before a password confirmation</span><br><span class="line">    | times out and the user is prompted to re-enter their password via the</span><br><span class="line">    | confirmation screen. By default, the timeout lasts for three hours.</span><br><span class="line">    |</span><br><span class="line">    */</span><br><span class="line"></span><br><span class="line">    &#x27;password_timeout&#x27; =&gt; 10800,</span><br><span class="line"></span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>kernel</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;jwt.role&#x27; =&gt; \App\Http\Middleware\JWTRoleAuth::class,</span><br></pre></td></tr></table></figure>
+
+<p>路由</p>
+<p>在做大学物理实验改的时候突然发现有个问题，那就是jwt会使用默认的guard导致就算权限没问题的话也会造成失败的问题</p>
+<p>不妨试试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Route::middleware(&#x27;guard:super&#x27;,&#x27;jwt.auth&#x27;)-&gt;prefix(&#x27;opr&#x27;)-&gt;group(function ()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">middleware(&#x27;jwt.role:admin&#x27;, &#x27;jwt.auth&#x27;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Route::middleware(&#x27;jwt.role:admin&#x27;)-&gt;prefix(&#x27;adminjk&#x27;)-&gt;group(function () &#123;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>以上ok</p>
+
+      </section>
+
+      
+      
+        <nav class="article-nav">
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+    <div class="card-text">
+      
+        <a href="/2022/08/13/php-grpc/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">php-grpc</h2>
+        </a>
+      
+      <div class="card-text--row">Newer</div>
+    </div>
+  </article>
+</div>
+          
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+    <div class="card-text">
+      
+        <a href="/2022/08/13/php-%E9%98%BF%E9%87%8C%E4%BA%91%E8%A7%86%E9%A2%91%E7%82%B9%E6%92%AD/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">php-阿里视频点播</h2>
+        </a>
+      
+      <div class="card-text--row">Older</div>
+    </div>
+  </article>
+</div>
+          
+        </nav>
+      
+
+      <section class="page-message-container layout-padding">
+        
+
+
+  
+  
+
+  
+  
+
+
+      </section>
+    </div>
+    <div class="widget-info">
+      <section class="widget-author widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-body">
+    
+      <img src="https://wenzhuhao.oss-cn-beijing.aliyuncs.com/newvideoTest/QQ%E5%A4%B4%E5%83%8F.jpg" class="soft-size--round soft-style--box" alt="NsuWzh">
+    
+    
+      <h2>NsuWzh</h2>
+    
+    
+      <p>勤能补拙</p>
+    
+
+    <div class="count-box">
+      <div class="count-box--item">
+        <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
+</svg>
+        <span>48</span>
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+        0
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+        0
+      </div>
+    </div>
+  </div>
+</section>
+
+      
+
+      
+<section class="widet-notice widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-notice" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M512 945.02305225v28.15620663a24.27259221 24.27259221 0 0 1-24.27259221 24.27259335H394.0352a48.54518557 48.54518557 0 0 1-41.74885888-23.78714112l-110.68302222-184.47170332a132.04290333 132.04290333 0 0 1-17.47626667-48.54518557h118.4502511a200.97706667 200.97706667 0 0 1 76.21594113 14.56355556l20.38897777 133.49925888a48.54518557 48.54518557 0 0 0 36.40888888 27.67075555l16.01991111 2.91271112a24.27259221 24.27259221 0 0 1 20.38897778 25.72894889zM997.45185223 463.45481443a194.18074112 194.18074112 0 0 1-38.8361489 116.50844445 24.75804445 24.75804445 0 0 1-36.4088889 0l-34.95253333-34.95253333a24.27259221 24.27259221 0 0 1-2.91271111-30.58346667 97.09036999 97.09036999 0 0 0 0-106.79940665 24.27259221 24.27259221 0 0 1 2.91271111-30.58346666l34.95253333-34.95253334a24.75804445 24.75804445 0 0 1 18.93262223-7.28177777 26.2144 26.2144 0 0 1 17.47626667 9.70903665A194.18074112 194.18074112 0 0 1 997.45185223 463.45481443z m-194.18074112-388.36148111v776.72296335a48.54518557 48.54518557 0 0 1-48.54518556 48.54518443h-28.64165888a48.54518557 48.54518557 0 0 1-33.98163001-14.07810332l-145.63555556-143.20829668A291.27111111 291.27111111 0 0 0 342.57730333 657.63555556H172.18370333a145.63555556 145.63555556 0 0 1-145.63555556-145.63555556v-97.09036999a145.63555556 145.63555556 0 0 1 145.63555556-145.63555556h170.3936a291.27111111 291.27111111 0 0 0 206.31703779-85.43952668l145.63555555-143.20829554a48.54518557 48.54518557 0 0 1 33.98162888-14.07810446H754.72592555a48.54518557 48.54518557 0 0 1 48.54518556 48.54518555z" fill="currentColor"></path>
+</svg>
+    <span>NOTICE</span>
+  </div>
+  <div class="widget-body">
+    <p>学习ing，很忙哒</p>
+  </div>
+</section>
+
+
+      <section class="widget-categorys widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+    <span>CATEGORYS</span>
+  </div>
+  <div class="widget-body">
+    <ul class="categorys-list">
+      
+    </ul>
+  </div>
+</section>
+
+      <section class="widget-tags widget-item  layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+    <span>TAGS</span>
+  </div>
+  <div class="widget-body">
+    <div class="tags-cloud">
+      
+    </div>
+  </div>
+</section>
+    </div>
+  </article>
+</div>
+
+    <!-- footer container -->
+<footer id="footer" class="footer">
+  <div class="footer-container">
+    
+    <div class="social-icons">
+      
+        
+      
+        
+      
+        
+      
+        
+          <a href="https://github.com/wzhyyds123/" class="soft-size--primary soft-style--box" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon-github" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M64.6 512c0 195.6 125.4 361.9 300.1 422.9 23.5 5.9 19.9-10.8 19.9-22.2v-77.6c-135.8 15.9-141.3-74-150.5-89-18.5-31.5-61.9-39.5-49-54.5 31-15.9 62.5 4 98.9 58 26.4 39.1 77.9 32.5 104.1 26 5.7-23.5 17.9-44.5 34.7-60.9-140.7-25.2-199.4-111.1-199.4-213.3 0-49.5 16.4-95.1 48.4-131.8-20.4-60.6 1.9-112.4 4.9-120.1 58.2-5.2 118.5 41.6 123.3 45.3 33.1-8.9 70.8-13.7 112.9-13.7 42.4 0 80.3 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.4-43.9 2.9 7.7 24.7 58.3 5.5 118.1 32.5 36.8 49 82.8 49 132.4 0 102.3-59 188.3-200.2 213.2 23.5 23.3 38.1 55.5 38.1 91.1v112.7c0.8 9 0 17.9 15.1 17.9C832.7 877 960.4 709.4 960.4 512.1c0-247.5-200.6-447.9-447.9-447.9C265 64.1 64.6 264.5 64.6 512z"></path>
+</svg>
+          </a>
+        
+      
+        
+      
+    </div>
+     
+    <p>&copy; 2022 <a href="/" target="_blank">W先生</a></p>
+
+    
+
+    <p>Powered by <a href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a> Theme - <a href="https://github.com/miiiku/flex-block" target="_blank" rel="noopener noreferrer author">flex-block</a></p>
+
+    <p>
+      <a href="javascript:;" id="theme-light">🌞 浅色</a>
+      <a href="javascript:;" id="theme-dark">🌛 深色</a>
+      <a href="javascript:;" id="theme-auto">🤖️ 自动</a>
+    </p>
+  </div>
+</footer>
+  </div>
+
+  <div class="back-to-top-fixed soft-size--round soft-style--box">
+    <svg class="icon icon-back-to-top" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <path d="M725.333333 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8l-213.333333-213.333333c-17.066667-17.066667-17.066667-42.666667 0-59.733333s42.666667-17.066667 59.733333 0l213.333333 213.333333c17.066667 17.066667 17.066667 42.666667 0 59.733333C746.666667 422.4 738.133333 426.666667 725.333333 426.666667z"></path>
+      <path d="M298.666667 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8-17.066667-17.066667-17.066667-42.666667 0-59.733333l213.333333-213.333333c17.066667-17.066667 42.666667-17.066667 59.733333 0s17.066667 42.666667 0 59.733333l-213.333333 213.333333C320 422.4 311.466667 426.666667 298.666667 426.666667z"></path>
+      <path d="M512 896c-25.6 0-42.666667-17.066667-42.666667-42.666667L469.333333 170.666667c0-25.6 17.066667-42.666667 42.666667-42.666667s42.666667 17.066667 42.666667 42.666667l0 682.666667C554.666667 878.933333 537.6 896 512 896z"></path>
+    </svg>
+  </div>
+
+  
+  <!-- aplayer -->
+
+
+  <!-- aplayer 音频 start -->
+  <link rel="stylesheet" href="https://unpkg.com/aplayer@1.10.1/dist/APlayer.min.css">
+  <script type="text/javascript" src="https://unpkg.com/aplayer@1.10.1/dist/APlayer.min.js"></script>
+  <script type="text/javascript">
+    const aplayer = document.querySelectorAll(".aplayer-box");
+    aplayer && initaplayer(aplayer);
+    function initaplayer(els) {
+      let elsArr = Array.from(els);
+      elsArr.forEach(el => {
+        let params = {
+          container: el,
+          audio: { ...el.dataset },
+          theme: "#b7daff",
+          autoplay: false,
+          loop: false,
+          mutex: true,
+        }
+        if (el.dataset.lrc) {
+          params['lrcType'] = 3
+        }
+        new APlayer(params);
+      });
+    }
+  </script>
+  <!-- aplayer 音频 end -->
+  
+
+
+<!-- dplayer -->
+
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+  <!-- 尾部用户自定义相关内容 -->
+</body>
+</html>
